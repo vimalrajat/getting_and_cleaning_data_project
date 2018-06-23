@@ -96,5 +96,5 @@ Master.dt <- data.table(Master)
 #This takes the mean of every column broken down by participants and activities
 TidyData <- Master.dt[, lapply(.SD, mean), by = 'participants,activities']
 write.table(TidyData, file = "Tidy.txt", row.names = FALSE)
-final_tab<-read.table("Tidy.txt", header = T, sep =  " ")
-View(final_tab)
+final_tidydata<-read.table("Tidy.txt", header = T, sep =  " ")
+View(final_tidydata)
