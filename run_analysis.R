@@ -5,8 +5,7 @@ library(dplyr) # for fancy data table manipulations and organization
 #download the zip file in a temporary folder
 temp <- tempfile()
 download.file("http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",temp)
-unzip(temp, list = TRUE) #This provides the list of variables and I choose the ones that are applicable for
-this data set
+unzip(temp, list = TRUE) #This provides the list of variables and I choose the ones that are applicable for this data set
 YTest <- read.table(unzip(temp, "UCI HAR Dataset/test/y_test.txt"))
 XTest <- read.table(unzip(temp, "UCI HAR Dataset/test/X_test.txt"))
 SubjectTest <- read.table(unzip(temp, "UCI HAR Dataset/test/subject_test.txt"))
