@@ -1,15 +1,23 @@
-#Activity Data CodeBook
+Activity Data CodeBook
+
 ###Rajat Kumar
+
 ###vimalrajat@gmail.com
+
 ##Introduction
+
 This is the CodeBook for the Getting and Cleaning Data Assignment from Week 4.
+
 ##Raw Data
+
 The raw data for this project came from the UCI Machine Learning Repository. It was
 collected from the accelerometers from the Samsung Galaxy S smartphone.
 The data can be downloaded here
 (https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset
 The full description of the experiments can be read here
 (http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones).
+
+
 ##Description
 The experiments have been carried out with a group of 30 volunteers within an age
 bracket of 19-48 years. Each person performed six activities (WALKING,
@@ -28,7 +36,9 @@ filter into body acceleration and gravity. The gravitational force is assumed to
 have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency
 was used. From each window, a vector of features was obtained by calculating
 variables from the time and frequency domain.
+
 ##Data Files
+
 The raw dataset included the following files:
 ‘README.txt’
 ‘features_info.txt’: Shows information about the variables used on the feature
@@ -52,16 +62,23 @@ obtained by subtracting the gravity from the total acceleration.
 ‘train/Inertial Signals/body_gyro_x_train.txt’: The angular velocity vector
 measured by the gyroscope for each window sample. The units are
 radians/second.
+
 ##Tidy Data
+
 The Final dataset for this project consists of 1 File - “tidydata.csv”.
+
 ##Description
+
 Each row represents 1 Subject and 1 Activity. The raw data included multiple
 measurement observations for each Subject and Activity, so these were averaged
 together for the final tidy dataset.
+
 ##Identifiers
+
 2 columns in the dataset serve as Identifiers:
 SubjectID - The ID for the subject participating in the experiment
 Ranges from 1 to 30
+
 ###Activity - The type of activity performed by the subject for which the
 measurements were taken
 WALKING
@@ -70,7 +87,9 @@ WALKING_DOWNSTAIRS
 SITTING
 STANDING
 LAYING
+
 ##Measurements
+
 The remaining columns are measurements taken by the smartphone for each Subject
 and Activity
 TimeBodyAccelerometerMeanX
@@ -139,7 +158,9 @@ FrequencyBodyAccelerometerMagnitudeStd
 FrequencyBodyAccelerometerJerkMagnitudeStd
 FrequencyBodyGyroscopeMagnitudeStd
 FrequencyBodyGyroscopeJerkMagnitudeStd
+
 ##Transformation
+
 To get from the Raw Data to the Tidy Data the following transformations were made.
 These transformations can be executed with the script ‘run_analysis.R’.
 1. Merged the training and test sets to create one data set.
