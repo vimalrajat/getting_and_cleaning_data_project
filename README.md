@@ -8,7 +8,7 @@ Entire code is divided into seven parts which are :
 6. changing the class type of the variables subjectnumber and activity
 7. Grouping by the subjectnuberwise and activitywise mean  
 
-#1. creating a directory and downloading a file 
+# 1.Creating a directory and downloading a file 
 library(data.table)
 library(reshape2)
 Url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
