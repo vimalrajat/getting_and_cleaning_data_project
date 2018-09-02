@@ -1,100 +1,58 @@
-library(plyr) # load plyr first, then dplyr
-library(data.table) # a prockage that handles dataframe better
-library(dplyr) # for fancy data table manipulations and organization
+# Getting and Cleaning Data Project John Hopkins Coursera
+# You should create one R script called run_analysis.R that does the following.
 
-#download the zip file in a temporary folder
-temp <- tempfile()
-download.file("http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",temp)
-unzip(temp, list = TRUE) #This provides the list of variables and I choose the ones that are applicable for this data set
-YTest <- read.table(unzip(temp, "UCI HAR Dataset/test/y_test.txt"))
-XTest <- read.table(unzip(temp, "UCI HAR Dataset/test/X_test.txt"))
-SubjectTest <- read.table(unzip(temp, "UCI HAR Dataset/test/subject_test.txt"))
-YTrain <- read.table(unzip(temp, "UCI HAR Dataset/train/y_train.txt"))
-XTrain <- read.table(unzip(temp, "UCI HAR Dataset/train/X_train.txt"))
-SubjectTrain <- read.table(unzip(temp, "UCI HAR Dataset/train/subject_train.txt"))
-Features <- read.table(unzip(temp, "UCI HAR Dataset/features.txt"))
-unlink(temp) # very important to remove this
+# 1.Merges the training and the test sets to create one data set.
+# 2.Extracts only the measurements on the mean and standard deviation for each measurement.
+# 3.Uses descriptive activity names to name the activities in the data set
+# 4.Appropriately labels the data set with descriptive variable names.
+# 5.From the data set in step 4, creates a second,
+#   independent tidy data set with the average of each variable for each activity and each subject.
 
-#Data Cleaning
-#Fix Column Names:
-colnames(XTrain) <- t(Features[2])
-colnames(XTest) <- t(Features[2])
-XTrain$activities <- YTrain[, 1]
-XTrain$participants <- SubjectTrain[, 1]
-XTest$activities <- YTest[, 1]
-XTest$participants <- SubjectTest[, 1]
+# author : RAJAT KUMAR
 
-#Assignment 1:Merges the training and the test sets to create one data set.
-Master <- rbind(XTrain, XTest)
-duplicated(colnames(Master))
-Master <- Master[, !duplicated(colnames(Master))]
 
-#Assignment 2: Extracts only the measurements on the mean and standard deviation for each measurement.
-Mean <- grep("mean()", names(Master), value = FALSE, fixed = TRUE)
-#In addition, we need to include 555:559 as they have means and are associated with the gravity terms
-Mean <- append(Mean, 471:477)
-InstrumentMeanMatrix <- Master[Mean]
-# For STD
-STD <- grep("std()", names(Master), value = FALSE)
-InstrumentSTDMatrix <- Master[STD]
+library(data.table)
+library(reshape2)
+#creating a directory and downloading a file 
+Url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+if(!file.exists("Module_3_Project")){dir.create("./Module_3_Project")}
+download.file(Url, destfile = "./Module_3_Project/data", method = "curl")
+unzip("./Module_3_Project/data")
+setwd("./UCI HAR Dataset")
 
-#Assignment 3:Uses descriptive activity names to name the activities in the data set
-#Changing the class is useful for replacing strings
-Master$activities <- as.character(Master$activities)
-Master$activities[Master$activities == 1] <- "Walking"
-Master$activities[Master$activities == 2] <- "Walking Upstairs"
-Master$activities[Master$activities == 3] <- "Walking Downstairs"
-Master$activities[Master$activities == 4] <- "Sitting"
-Master$activities[Master$activities == 5] <- "Standing"
-Master$activities[Master$activities == 6] <- "Laying"
-Master$activities <- as.factor(Master$activities)
+# Activity Labels
+activitylabels <- fread("activity_labels.txt", header = F, sep = " ",col.names = c("activityclass", "activityname"))
+features <- fread("features.txt", header = F,sep = " ", col.names = c("index", "feature"))
+featuresrequired <- grep("(mean|std)\\(\\)", features[ , feature])
+measurements <- features[featuresrequired, feature]
+measurements <- gsub("[()]", "", measurements)
 
-#Assignment 4:Appropriately labels the data set with descriptive variable names
-names(Master) # survey the data
-#Use gsub to replace that list
-names(Master) <- gsub("Acc", "Accelerator", names(Master))
-names(Master) <- gsub("Mag", "Magnitude", names(Master))
-names(Master) <- gsub("Gyro", "Gyroscope", names(Master))
-names(Master) <- gsub("^t", "time", names(Master))
-names(Master) <- gsub("^f", "frequency", names(Master))
-#Change participants names
-Master$participants <- as.character(Master$participants)
-Master$participants[Master$participants == 1] <- "Participant 1"
-Master$participants[Master$participants == 2] <- "Participant 2"
-Master$participants[Master$participants == 3] <- "Participant 3"
-Master$participants[Master$participants == 4] <- "Participant 4"
-Master$participants[Master$participants == 5] <- "Participant 5"
-Master$participants[Master$participants == 6] <- "Participant 6"
-Master$participants[Master$participants == 7] <- "Participant 7"
-Master$participants[Master$participants == 8] <- "Participant 8"
-Master$participants[Master$participants == 9] <- "Participant 9"
-Master$participants[Master$participants == 10] <- "Participant 10"
-Master$participants[Master$participants == 11] <- "Participant 11"
-Master$participants[Master$participants == 12] <- "Participant 12"
-Master$participants[Master$participants == 13] <- "Participant 13"
-Master$participants[Master$participants == 14] <- "Participant 14"
-Master$participants[Master$participants == 15] <- "Participant 15"
-Master$participants[Master$participants == 16] <- "Participant 16"
-Master$participants[Master$participants == 17] <- "Participant 17"
-Master$participants[Master$participants == 18] <- "Participant 18"
-Master$participants[Master$participants == 19] <- "Participant 19"
-Master$participants[Master$participants == 20] <- "Participant 20"
-Master$participants[Master$participants == 21] <- "Participant 21"
-Master$participants[Master$participants == 22] <- "Participant 22"
-Master$participants[Master$participants == 23] <- "Participant 23"
-Master$participants[Master$participants == 24] <- "Participant 24"
-Master$participants[Master$participants == 25] <- "Participant 25"
-Master$participants[Master$participants == 26] <- "Participant 26"
-Master$participants[Master$participants == 27] <- "Participant 27"
-Master$participants[Master$participants == 28] <- "Participant 28"
-Master$participants[Master$participants == 29] <- "Participant 29"
-Master$participants[Master$participants == 30] <- "Participant 30"
-Master$participants <- as.factor(Master$participants)
+# cleaning the train data set
+traindata <- fread("train/X_train.txt", header = F, sep = " ", col.names = features$feature)
+traindata <- traindata[,featuresrequired, with = F]
+names(traindata) <- measurements
+trainactivities <- fread("train/y_train.txt", header = F, sep = " ", col.names = "activity")
+trainsubject <- fread("train/subject_train.txt", header = F, sep = " ", col.names = "subjectnumber" )
+train <- cbind(trainsubject,trainactivities,traindata)
 
-#Assignment 5:Create a tidy data set
-Master.dt <- data.table(Master)
-#This takes the mean of every column broken down by participants and activities
-TidyData <- Master.dt[, lapply(.SD, mean), by = 'participants,activities']
-write.table(TidyData, file = "Tidy.txt", row.names = FALSE)
-final_tidydata<-read.table("Tidy.txt", header = T, sep =  " ")
-View(final_tidydata)
+#cleaning the test data set
+testdata <- fread("test/X_test.txt", header = F, sep = " ", col.names = features$feature)
+testdata <- testdata[, featuresrequired, with = F]
+names(testdata) <- measurements
+testactivities <-fread("test/y_test.txt", header = F, sep = " ", col.names = "activity")
+testsubject <- fread("test/subject_test.txt", header = F, sep = " ", col.names = "subjectnumber" )
+test <- cbind(testsubject,testactivities,testdata)
+
+#merging the test and train dataset 
+dataset <- rbind(train,test)
+
+#changing the class type of the variables subjectnumber and activity
+dataset[,"subjectnumber"] <- sapply(dataset[,"subjectnumber"], as.factor)
+dataset[["activity"]] <- factor(dataset[, activity]
+                                 , levels = activitylabels[["activityclass"]]
+                                 , labels = activitylabels[["activityname"]])
+
+#Grouping by the subjectnuberwise and activitywise mean     
+dataset <- melt(data = dataset, id = c("subjectnumber", "activity"))
+dataset <- dcast(data = dataset, subjectnumber + activity ~ variable, fun.aggregate = mean)
+fwrite(x = dataset, file = "tidyData.csv", quote = FALSE)
