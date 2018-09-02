@@ -51,6 +51,7 @@ dataset[["activity"]] <- factor(dataset[, activity]
                                  , levels = activitylabels[["activityclass"]]
                                  , labels = activitylabels[["activityname"]])
 
+
 # 7.Grouping by the subjectnuberwise and activitywise mean     
 dataset <- melt(data = dataset, id = c("subjectnumber", "activity"))
 dataset <- dcast(data = dataset, subjectnumber + activity ~ variable, fun.aggregate = mean)
